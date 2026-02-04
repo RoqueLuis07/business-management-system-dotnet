@@ -11,6 +11,7 @@ namespace BusinessManagementSystem.Domain.Entities
         public string WorkOrderNumber { get; private set; }
 
         public Client Client { get; private set; }
+        public WorkOrderDiagnosis? Diagnosis { get; private set; }
         public Equipment Equipment { get; private set; }
 
         // Lo que el cliente pide / el problema reportado
@@ -93,6 +94,13 @@ namespace BusinessManagementSystem.Domain.Entities
             EnsureNotDelivered();
             EnsureStatus(WorkOrderStatus.Ingresada, WorkOrderStatus.Asignada);
             Status = WorkOrderStatus.EnDiagnostico;
+        }
+        public void SetDiagnosis(string findings, string recommendedWork, string? notes, Guid mechanicUserId)
+        {
+            EnsureNotDelivered();
+            EnsureStatus(WorkOrderStatus.EnDiagnostico);
+
+            Diagnosis = new WorkOrderDiagnosis(findings, recommendedWork, notes, mechanicUserId);
         }
 
         public void MarkWaitingForApproval()
