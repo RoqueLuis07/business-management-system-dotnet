@@ -27,6 +27,7 @@ namespace BusinessManagementSystem.Domain.Entities
 
         // Asignación simple por ahora (luego lo vinculamos a User)
         public Guid? AssignedMechanicUserId { get; private set; }
+        public WorkOrderQuote? Quote { get; private set; }
 
         // Accesorios (lo que trae / no trae al ingreso)
         public IReadOnlyCollection<WorkOrderAccessory> Accessories => _accessories.AsReadOnly();
@@ -101,6 +102,30 @@ namespace BusinessManagementSystem.Domain.Entities
             EnsureStatus(WorkOrderStatus.EnDiagnostico);
 
             Diagnosis = new WorkOrderDiagnosis(findings, recommendedWork, notes, mechanicUserId);
+        }
+        public void CreateOrUpdateQuote(decimal laborCost, string? notes, Guid createdByUserId)
+        {
+            EnsureNotDelivered();
+
+            // El presupuesto suele nacer tras diagnóstico (o durante),
+            // así que permitimos EnDiagnostico o EsperandoAprobacion.
+            EnsureStatus(WorkOrderStatus.EnDiagnostico, WorkOrderStatus.EsperandoAprobacion);
+
+            // Para presupuestar bien, necesitamos que los repuestos tengan precio asignado.
+            // Si alguno no tiene UnitPrice, no se puede calcular el total.
+            var unpriced = _parts.Where(p => p.UnitPrice is null).ToList();
+            if (unpriced.Any())
+                throw new InvalidOperationException("Hay repuestos sin precio. No se puede generar el presupuesto.");
+
+            var partsTotal = _parts.Sum(p => p.LineTotal ?? 0m);
+
+            if (Quote is null)
+                Quote = new WorkOrderQuote(laborCost, partsTotal, notes, createdByUserId);
+            else
+                Quote.Update(laborCost, partsTotal, notes);
+
+            // Si creamos/actualizamos el presupuesto, pasa a esperar aprobación del cliente
+            Status = WorkOrderStatus.EsperandoAprobacion;
         }
 
         public void MarkWaitingForApproval()
