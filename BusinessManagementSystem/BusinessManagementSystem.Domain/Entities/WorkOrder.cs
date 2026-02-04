@@ -1,3 +1,4 @@
+using System.Linq;
 using BusinessManagementSystem.Domain.Enums;
 
 namespace BusinessManagementSystem.Domain.Entities
@@ -26,6 +27,12 @@ namespace BusinessManagementSystem.Domain.Entities
         // Asignación simple por ahora (luego lo vinculamos a User)
         public Guid? AssignedMechanicUserId { get; private set; }
 
+        // Accesorios (lo que trae / no trae al ingreso)
+        public IReadOnlyCollection<WorkOrderAccessory> Accessories => _accessories.AsReadOnly();
+        private readonly List<WorkOrderAccessory> _accessories = new();
+        public IReadOnlyCollection<WorkOrderPart> Parts => _parts.AsReadOnly();
+        private readonly List<WorkOrderPart> _parts = new();
+
         public WorkOrder(string workOrderNumber, Client client, Equipment equipment, string requestedWorkDescription)
         {
             if (string.IsNullOrWhiteSpace(workOrderNumber))
@@ -47,6 +54,16 @@ namespace BusinessManagementSystem.Domain.Entities
         // Comportamiento / reglas
         // -----------------------
 
+        public void AddAccessory(string name, bool isPresent, string? condition)
+        {
+            EnsureNotDelivered();
+            _accessories.Add(new WorkOrderAccessory(name, isPresent, condition));
+        }
+        public void AddPart(string partName, int quantity)
+        {
+            EnsureNotDelivered();
+            _parts.Add(new WorkOrderPart(partName, quantity));
+        }
         public void AssignMechanic(Guid mechanicUserId)
         {
             EnsureNotDelivered();
@@ -58,6 +75,17 @@ namespace BusinessManagementSystem.Domain.Entities
 
             if (Status == WorkOrderStatus.Ingresada)
                 Status = WorkOrderStatus.Asignada;
+        }
+
+        public void PricePart(Guid workOrderPartId, decimal unitPrice, Guid? catalogItemId = null)
+        {
+            EnsureNotDelivered();
+
+            var part = _parts.FirstOrDefault(p => p.Id == workOrderPartId);
+            if (part is null)
+                throw new InvalidOperationException("No se encontró el repuesto dentro de la OT.");
+
+            part.SetPricing(unitPrice, catalogItemId);
         }
 
         public void StartDiagnosis()
@@ -106,6 +134,9 @@ namespace BusinessManagementSystem.Domain.Entities
         {
             EnsureNotDelivered();
             EnsureStatus(WorkOrderStatus.ListaParaEntrega);
+
+            if (deliveredAtLocal == default)
+                throw new ArgumentException("La fecha de entrega no es válida.", nameof(deliveredAtLocal));
 
             DeliveredAtLocal = deliveredAtLocal;
             Status = WorkOrderStatus.Entregada;
