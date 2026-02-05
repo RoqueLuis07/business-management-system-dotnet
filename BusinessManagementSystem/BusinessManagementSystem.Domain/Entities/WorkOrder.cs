@@ -11,8 +11,11 @@ namespace BusinessManagementSystem.Domain.Entities
         public string WorkOrderNumber { get; private set; }
 
         public Client Client { get; private set; }
-        public WorkOrderDiagnosis? Diagnosis { get; private set; }
         public Equipment Equipment { get; private set; }
+
+        public WorkOrderDiagnosis? Diagnosis { get; private set; }
+        public WorkOrderQuote? Quote { get; private set; }
+        public WorkOrderServiceReport? ServiceReport { get; private set; }
 
         // Lo que el cliente pide / el problema reportado
         public string RequestedWorkDescription { get; private set; }
@@ -27,11 +30,12 @@ namespace BusinessManagementSystem.Domain.Entities
 
         // Asignación simple por ahora (luego lo vinculamos a User)
         public Guid? AssignedMechanicUserId { get; private set; }
-        public WorkOrderQuote? Quote { get; private set; }
 
         // Accesorios (lo que trae / no trae al ingreso)
         public IReadOnlyCollection<WorkOrderAccessory> Accessories => _accessories.AsReadOnly();
         private readonly List<WorkOrderAccessory> _accessories = new();
+
+        // Repuestos (mecánico carga; admin pone precio)
         public IReadOnlyCollection<WorkOrderPart> Parts => _parts.AsReadOnly();
         private readonly List<WorkOrderPart> _parts = new();
 
@@ -46,7 +50,7 @@ namespace BusinessManagementSystem.Domain.Entities
             if (string.IsNullOrWhiteSpace(requestedWorkDescription))
                 throw new ArgumentException("La descripción del trabajo solicitado es obligatoria.", nameof(requestedWorkDescription));
 
-            WorkOrderNumber = workOrderNumber.Trim(); // conserva ceros a la izquierda
+            WorkOrderNumber = workOrderNumber.Trim();
             Client = client;
             Equipment = equipment;
             RequestedWorkDescription = requestedWorkDescription.Trim();
@@ -61,22 +65,11 @@ namespace BusinessManagementSystem.Domain.Entities
             EnsureNotDelivered();
             _accessories.Add(new WorkOrderAccessory(name, isPresent, condition));
         }
+
         public void AddPart(string partName, int quantity)
         {
             EnsureNotDelivered();
             _parts.Add(new WorkOrderPart(partName, quantity));
-        }
-        public void AssignMechanic(Guid mechanicUserId)
-        {
-            EnsureNotDelivered();
-
-            if (mechanicUserId == Guid.Empty)
-                throw new ArgumentException("El mecánico asignado no es válido.", nameof(mechanicUserId));
-
-            AssignedMechanicUserId = mechanicUserId;
-
-            if (Status == WorkOrderStatus.Ingresada)
-                Status = WorkOrderStatus.Asignada;
         }
 
         public void PricePart(Guid workOrderPartId, decimal unitPrice, Guid? catalogItemId = null)
@@ -90,12 +83,26 @@ namespace BusinessManagementSystem.Domain.Entities
             part.SetPricing(unitPrice, catalogItemId);
         }
 
+        public void AssignMechanic(Guid mechanicUserId)
+        {
+            EnsureNotDelivered();
+
+            if (mechanicUserId == Guid.Empty)
+                throw new ArgumentException("El mecánico asignado no es válido.", nameof(mechanicUserId));
+
+            AssignedMechanicUserId = mechanicUserId;
+
+            if (Status == WorkOrderStatus.Ingresada)
+                Status = WorkOrderStatus.Asignada;
+        }
+
         public void StartDiagnosis()
         {
             EnsureNotDelivered();
             EnsureStatus(WorkOrderStatus.Ingresada, WorkOrderStatus.Asignada);
             Status = WorkOrderStatus.EnDiagnostico;
         }
+
         public void SetDiagnosis(string findings, string recommendedWork, string? notes, Guid mechanicUserId)
         {
             EnsureNotDelivered();
@@ -103,16 +110,12 @@ namespace BusinessManagementSystem.Domain.Entities
 
             Diagnosis = new WorkOrderDiagnosis(findings, recommendedWork, notes, mechanicUserId);
         }
+
         public void CreateOrUpdateQuote(decimal laborCost, string? notes, Guid createdByUserId)
         {
             EnsureNotDelivered();
-
-            // El presupuesto suele nacer tras diagnóstico (o durante),
-            // así que permitimos EnDiagnostico o EsperandoAprobacion.
             EnsureStatus(WorkOrderStatus.EnDiagnostico, WorkOrderStatus.EsperandoAprobacion);
 
-            // Para presupuestar bien, necesitamos que los repuestos tengan precio asignado.
-            // Si alguno no tiene UnitPrice, no se puede calcular el total.
             var unpriced = _parts.Where(p => p.UnitPrice is null).ToList();
             if (unpriced.Any())
                 throw new InvalidOperationException("Hay repuestos sin precio. No se puede generar el presupuesto.");
@@ -124,7 +127,6 @@ namespace BusinessManagementSystem.Domain.Entities
             else
                 Quote.Update(laborCost, partsTotal, notes);
 
-            // Si creamos/actualizamos el presupuesto, pasa a esperar aprobación del cliente
             Status = WorkOrderStatus.EsperandoAprobacion;
         }
 
@@ -149,10 +151,22 @@ namespace BusinessManagementSystem.Domain.Entities
             Status = WorkOrderStatus.EnReparacion;
         }
 
+        public void SetServiceReport(string workPerformed, string? recommendations, string? notes, Guid mechanicUserId)
+        {
+            EnsureNotDelivered();
+            EnsureStatus(WorkOrderStatus.EnReparacion, WorkOrderStatus.Terminada);
+
+            ServiceReport = new WorkOrderServiceReport(workPerformed, recommendations, notes, mechanicUserId);
+        }
+
         public void MarkFinished()
         {
             EnsureNotDelivered();
             EnsureStatus(WorkOrderStatus.EnReparacion);
+
+            if (ServiceReport is null)
+                throw new InvalidOperationException("No se puede finalizar la OT sin cargar el trabajo realizado.");
+
             Status = WorkOrderStatus.Terminada;
         }
 
