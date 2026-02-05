@@ -120,6 +120,26 @@ namespace BusinessManagementSystem.Domain.Entities
 
             Diagnosis = new WorkOrderDiagnosis(findings, recommendedWork, notes, mechanicUserId);
         }
+        public string? CancellationReason { get; private set; }
+        public Guid? CancelledByUserId { get; private set; }
+        public DateTime? CancelledAtUtc { get; private set; }
+
+        public void Cancel(string reason, Guid cancelledByUserId)
+        {
+            EnsureNotDelivered();
+
+            if (string.IsNullOrWhiteSpace(reason))
+                throw new ArgumentException("El motivo de cancelación es obligatorio.", nameof(reason));
+
+            if (cancelledByUserId == Guid.Empty)
+                throw new ArgumentException("El usuario no es válido.", nameof(cancelledByUserId));
+
+            CancellationReason = reason.Trim();
+            CancelledByUserId = cancelledByUserId;
+            CancelledAtUtc = DateTime.UtcNow;
+
+            Status = WorkOrderStatus.Cancelada;
+        }
 
         public void CreateOrUpdateQuote(decimal laborCost, string? notes, Guid createdByUserId)
         {
@@ -214,6 +234,36 @@ namespace BusinessManagementSystem.Domain.Entities
 
             ServiceReport = new WorkOrderServiceReport(workPerformed, recommendations, notes, mechanicUserId);
         }
+        public void UpdatePartQuantity(Guid workOrderPartId, int quantity)
+        {
+            EnsureNotDelivered();
+
+            var part = _parts.FirstOrDefault(p => p.Id == workOrderPartId);
+            if (part is null)
+                throw new InvalidOperationException("No se encontró el repuesto dentro de la OT.");
+
+            part.UpdateQuantity(quantity);
+
+            // Si ya había presupuesto generado, queda desactualizado: lo invalidamos
+            Quote = null;
+            if (Status == WorkOrderStatus.EsperandoAprobacion)
+                Status = WorkOrderStatus.EnDiagnostico;
+        }
+
+        public void RemovePart(Guid workOrderPartId)
+        {
+            EnsureNotDelivered();
+
+            var part = _parts.FirstOrDefault(p => p.Id == workOrderPartId);
+            if (part is null)
+                throw new InvalidOperationException("No se encontró el repuesto dentro de la OT.");
+
+            _parts.Remove(part);
+
+            Quote = null;
+            if (Status == WorkOrderStatus.EsperandoAprobacion)
+                Status = WorkOrderStatus.EnDiagnostico;
+        }
 
         public void MarkFinished()
         {
@@ -265,7 +315,11 @@ namespace BusinessManagementSystem.Domain.Entities
         {
             if (Status == WorkOrderStatus.Entregada)
                 throw new InvalidOperationException("La OT ya fue entregada/cerrada. No se puede modificar.");
+
+            if (Status == WorkOrderStatus.Cancelada)
+                throw new InvalidOperationException("La OT está cancelada. No se puede modificar.");
         }
+
 
         private void EnsureStatus(params WorkOrderStatus[] allowed)
         {

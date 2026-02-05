@@ -12,5 +12,6 @@ namespace BusinessManagementSystem.Domain.Enums
         ListaParaEntrega = 8,
         Entregada = 9,
         PresupuestoRechazado = 10,
+        Cancelada = 11,
     }
 }
