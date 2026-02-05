@@ -15,6 +15,10 @@ namespace BusinessManagementSystem.Domain.Entities
 
         public WorkOrderDiagnosis? Diagnosis { get; private set; }
         public WorkOrderQuote? Quote { get; private set; }
+        public string? QuoteRejectionReason { get; private set; }
+        public Guid? QuoteRejectedByUserId { get; private set; }
+        public DateTime? QuoteRejectedAtUtc { get; private set; }
+
         public WorkOrderServiceReport? ServiceReport { get; private set; }
 
         // Lo que el cliente pide / el problema reportado
@@ -168,7 +172,32 @@ namespace BusinessManagementSystem.Domain.Entities
         {
             EnsureNotDelivered();
             EnsureStatus(WorkOrderStatus.EsperandoAprobacion);
+
+            if (Quote is null)
+                throw new InvalidOperationException("No existe presupuesto para aprobar.");
+
             Status = WorkOrderStatus.Aprobada;
+        }
+
+        public void RejectQuote(string reason, Guid rejectedByUserId)
+        {
+            EnsureNotDelivered();
+            EnsureStatus(WorkOrderStatus.EsperandoAprobacion);
+
+            if (Quote is null)
+                throw new InvalidOperationException("No existe presupuesto para rechazar.");
+
+            if (string.IsNullOrWhiteSpace(reason))
+                throw new ArgumentException("El motivo de rechazo es obligatorio.", nameof(reason));
+
+            if (rejectedByUserId == Guid.Empty)
+                throw new ArgumentException("El usuario no es válido.", nameof(rejectedByUserId));
+
+            QuoteRejectionReason = reason.Trim();
+            QuoteRejectedByUserId = rejectedByUserId;
+            QuoteRejectedAtUtc = DateTime.UtcNow;
+
+            Status = WorkOrderStatus.PresupuestoRechazado;
         }
 
         public void StartRepair()

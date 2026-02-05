@@ -10,6 +10,7 @@ namespace BusinessManagementSystem.Domain.Enums
         EnReparacion = 6,
         Terminada = 7,
         ListaParaEntrega = 8,
-        Entregada = 9
+        Entregada = 9,
+        PresupuestoRechazado = 10,
     }
 }
