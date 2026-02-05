@@ -27,6 +27,8 @@ namespace BusinessManagementSystem.Domain.Entities
         // Garantía corre desde ENTREGA (regla de negocio)
         public DateTime? DeliveredAtLocal { get; private set; }
         public int WarrantyDays { get; private set; } = 30;
+        public Guid? WarrantyOriginalWorkOrderId { get; private set; }
+
 
         // Asignación simple por ahora (luego lo vinculamos a User)
         public Guid? AssignedMechanicUserId { get; private set; }
@@ -34,6 +36,10 @@ namespace BusinessManagementSystem.Domain.Entities
         // Accesorios (lo que trae / no trae al ingreso)
         public IReadOnlyCollection<WorkOrderAccessory> Accessories => _accessories.AsReadOnly();
         private readonly List<WorkOrderAccessory> _accessories = new();
+
+        public IReadOnlyCollection<WarrantyClaim> WarrantyClaims => _warrantyClaims.AsReadOnly();
+        private readonly List<WarrantyClaim> _warrantyClaims = new();
+
 
         // Repuestos (mecánico carga; admin pone precio)
         public IReadOnlyCollection<WorkOrderPart> Parts => _parts.AsReadOnly();
@@ -128,6 +134,27 @@ namespace BusinessManagementSystem.Domain.Entities
                 Quote.Update(laborCost, partsTotal, notes);
 
             Status = WorkOrderStatus.EsperandoAprobacion;
+        }
+        public void MarkAsWarrantyClaimOf(WorkOrder originalWorkOrder, string reason, Guid createdByUserId, DateTime nowLocal)
+        {
+            EnsureNotDelivered();
+
+            if (originalWorkOrder is null)
+                throw new ArgumentNullException(nameof(originalWorkOrder));
+
+            if (originalWorkOrder.Status != WorkOrderStatus.Entregada)
+                throw new InvalidOperationException("La OT original debe estar entregada para aplicar garantía.");
+
+            if (!originalWorkOrder.IsUnderWarranty(nowLocal))
+                throw new InvalidOperationException("La OT original está fuera del período de garantía.");
+
+            if (Client.Id != originalWorkOrder.Client.Id)
+                throw new InvalidOperationException("La garantía debe pertenecer al mismo cliente.");
+
+            WarrantyOriginalWorkOrderId = originalWorkOrder.Id;
+
+            // Opcional: podríamos guardar el motivo en otra parte, pero por ahora queda en WarrantyClaim entidad.
+            _warrantyClaims.Add(new WarrantyClaim(originalWorkOrder.Id, this.Id, reason, createdByUserId));
         }
 
         public void MarkWaitingForApproval()
