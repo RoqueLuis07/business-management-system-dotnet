@@ -81,6 +81,28 @@ namespace BusinessManagementSystem.Domain.Entities
             _accessories.Add(new WorkOrderAccessory(name, isPresent, condition));
         }
 
+        public void UpdateAccessory(Guid accessoryId, bool isPresent, string? condition)
+        {
+            EnsureNotClosed();
+
+            var accessory = _accessories.FirstOrDefault(a => a.Id == accessoryId);
+            if (accessory is null)
+                throw new InvalidOperationException("No se encontró el accesorio en la OT.");
+
+            accessory.UpdateCondition(isPresent, condition);
+        }
+
+        public void RemoveAccessory(Guid accessoryId)
+        {
+            EnsureNotClosed();
+
+            var accessory = _accessories.FirstOrDefault(a => a.Id == accessoryId);
+            if (accessory is null)
+                throw new InvalidOperationException("No se encontró el accesorio en la OT.");
+
+            _accessories.Remove(accessory);
+        }
+
         public void AddPart(string partName, int quantity)
         {
             EnsureNotClosed();

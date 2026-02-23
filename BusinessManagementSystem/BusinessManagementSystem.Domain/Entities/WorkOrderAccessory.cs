@@ -23,5 +23,15 @@ namespace BusinessManagementSystem.Domain.Entities
             else
                 Condition = string.IsNullOrWhiteSpace(condition) ? "Sin observaciones" : condition.Trim();
         }
+
+        public void UpdateCondition(bool isPresent, string? condition)
+        {
+            IsPresent = isPresent;
+
+            if (!isPresent && string.IsNullOrWhiteSpace(condition))
+                Condition = "No trae";
+            else
+                Condition = string.IsNullOrWhiteSpace(condition) ? "Sin observaciones" : condition.Trim();
+        }
     }
 }
