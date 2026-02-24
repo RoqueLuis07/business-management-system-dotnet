@@ -1,5 +1,5 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
-
+<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <TargetFramework>net8.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
@@ -7,7 +7,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\..\BusinessManagementSystem\BusinessManagementSystem.Domain\BusinessManagementSystem.Domain.csproj" />
+    <!-- From src/Application to Domain project -->
+    <ProjectReference Include="..\..\BusinessManagementSystem\BusinessManagementSystem.Domain\BusinessManagementSystem.Domain.csproj" />
   </ItemGroup>
-
 </Project>

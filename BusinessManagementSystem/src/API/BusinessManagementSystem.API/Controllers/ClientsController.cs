@@ -28,8 +28,8 @@ namespace BusinessManagementSystem.API.Controllers
         /// </summary>
         /// <returns>Lista de clientes</returns>
         [HttpGet]
-        [ProduceResponseType(StatusCodes.Status200OK)]
-        [ProduceResponseType(StatusCodes.Status500InternalServerError)]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<ActionResult<IEnumerable<ClientDto>>> GetAllClients(CancellationToken ct)
         {
             try
@@ -61,9 +61,9 @@ namespace BusinessManagementSystem.API.Controllers
         /// </summary>
         /// <param name="id">ID del cliente</param>
         [HttpGet("{id}")]
-        [ProduceResponseType(StatusCodes.Status200OK)]
-        [ProduceResponseType(StatusCodes.Status404NotFound)]
-        [ProduceResponseType(StatusCodes.Status500InternalServerError)]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<ActionResult<ClientDto>> GetClientById(Guid id, CancellationToken ct)
         {
             try
@@ -100,9 +100,9 @@ namespace BusinessManagementSystem.API.Controllers
         /// </summary>
         /// <param name="dto">Datos del cliente a crear</param>
         [HttpPost]
-        [ProduceResponseType(StatusCodes.Status201Created)]
-        [ProduceResponseType(StatusCodes.Status400BadRequest)]
-        [ProduceResponseType(StatusCodes.Status500InternalServerError)]
+        [ProducesResponseType(StatusCodes.Status201Created)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<ActionResult<SuccessResponse<object>>> CreateClient(
             [FromBody] CreateClientDto dto,
             CancellationToken ct)
@@ -144,10 +144,10 @@ namespace BusinessManagementSystem.API.Controllers
         /// <param name="id">ID del cliente</param>
         /// <param name="dto">Datos actualizados</param>
         [HttpPut("{id}")]
-        [ProduceResponseType(StatusCodes.Status200OK)]
-        [ProduceResponseType(StatusCodes.Status404NotFound)]
-        [ProduceResponseType(StatusCodes.Status400BadRequest)]
-        [ProduceResponseType(StatusCodes.Status500InternalServerError)]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<ActionResult<SuccessResponse<object>>> UpdateClient(
             Guid id,
             [FromBody] CreateClientDto dto,
@@ -182,9 +182,9 @@ namespace BusinessManagementSystem.API.Controllers
         /// </summary>
         /// <param name="id">ID del cliente a eliminar</param>
         [HttpDelete("{id}")]
-        [ProduceResponseType(StatusCodes.Status200OK)]
-        [ProduceResponseType(StatusCodes.Status404NotFound)]
-        [ProduceResponseType(StatusCodes.Status500InternalServerError)]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<ActionResult<SuccessResponse<object>>> DeleteClient(Guid id, CancellationToken ct)
         {
             try

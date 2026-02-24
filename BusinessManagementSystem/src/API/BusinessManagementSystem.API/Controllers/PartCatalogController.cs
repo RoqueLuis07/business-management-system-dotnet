@@ -25,8 +25,8 @@ namespace BusinessManagementSystem.API.Controllers
         /// Obtiene todos los repuestos
         /// </summary>
         [HttpGet]
-        [ProduceResponseType(StatusCodes.Status200OK)]
-        [ProduceResponseType(StatusCodes.Status500InternalServerError)]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<ActionResult<SuccessResponse<object>>> GetAllParts(CancellationToken ct)
         {
             try
@@ -46,8 +46,8 @@ namespace BusinessManagementSystem.API.Controllers
         /// Obtiene solo repuestos activos
         /// </summary>
         [HttpGet("active")]
-        [ProduceResponseType(StatusCodes.Status200OK)]
-        [ProduceResponseType(StatusCodes.Status500InternalServerError)]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<ActionResult<SuccessResponse<object>>> GetActiveParts(CancellationToken ct)
         {
             try
@@ -67,9 +67,9 @@ namespace BusinessManagementSystem.API.Controllers
         /// Obtiene un repuesto por su ID
         /// </summary>
         [HttpGet("{id}")]
-        [ProduceResponseType(StatusCodes.Status200OK)]
-        [ProduceResponseType(StatusCodes.Status404NotFound)]
-        [ProduceResponseType(StatusCodes.Status500InternalServerError)]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<ActionResult<SuccessResponse<object>>> GetPartById(Guid id, CancellationToken ct)
         {
             try
@@ -91,9 +91,9 @@ namespace BusinessManagementSystem.API.Controllers
         /// Obtiene un repuesto por su nombre
         /// </summary>
         [HttpGet("name/{name}")]
-        [ProduceResponseType(StatusCodes.Status200OK)]
-        [ProduceResponseType(StatusCodes.Status404NotFound)]
-        [ProduceResponseType(StatusCodes.Status500InternalServerError)]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<ActionResult<SuccessResponse<object>>> GetPartByName(string name, CancellationToken ct)
         {
             try

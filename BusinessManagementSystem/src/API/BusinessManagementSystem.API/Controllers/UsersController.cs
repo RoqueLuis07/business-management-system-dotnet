@@ -25,8 +25,8 @@ namespace BusinessManagementSystem.API.Controllers
         /// Obtiene todos los usuarios
         /// </summary>
         [HttpGet]
-        [ProduceResponseType(StatusCodes.Status200OK)]
-        [ProduceResponseType(StatusCodes.Status500InternalServerError)]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<ActionResult<SuccessResponse<object>>> GetAllUsers(CancellationToken ct)
         {
             try
@@ -46,9 +46,9 @@ namespace BusinessManagementSystem.API.Controllers
         /// Obtiene un usuario por su ID
         /// </summary>
         [HttpGet("{id}")]
-        [ProduceResponseType(StatusCodes.Status200OK)]
-        [ProduceResponseType(StatusCodes.Status404NotFound)]
-        [ProduceResponseType(StatusCodes.Status500InternalServerError)]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<ActionResult<SuccessResponse<object>>> GetUserById(Guid id, CancellationToken ct)
         {
             try
@@ -70,9 +70,9 @@ namespace BusinessManagementSystem.API.Controllers
         /// Obtiene un usuario por su email
         /// </summary>
         [HttpGet("email/{email}")]
-        [ProduceResponseType(StatusCodes.Status200OK)]
-        [ProduceResponseType(StatusCodes.Status404NotFound)]
-        [ProduceResponseType(StatusCodes.Status500InternalServerError)]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<ActionResult<SuccessResponse<object>>> GetUserByEmail(string email, CancellationToken ct)
         {
             try
@@ -94,8 +94,8 @@ namespace BusinessManagementSystem.API.Controllers
         /// Obtiene solo usuarios activos
         /// </summary>
         [HttpGet("active")]
-        [ProduceResponseType(StatusCodes.Status200OK)]
-        [ProduceResponseType(StatusCodes.Status500InternalServerError)]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<ActionResult<SuccessResponse<object>>> GetActiveUsers(CancellationToken ct)
         {
             try

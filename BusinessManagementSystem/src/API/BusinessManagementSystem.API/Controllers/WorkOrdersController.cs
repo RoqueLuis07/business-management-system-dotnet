@@ -32,8 +32,8 @@ namespace BusinessManagementSystem.API.Controllers
         /// Obtiene todas las órdenes de trabajo
         /// </summary>
         [HttpGet]
-        [ProduceResponseType(StatusCodes.Status200OK)]
-        [ProduceResponseType(StatusCodes.Status500InternalServerError)]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<ActionResult<SuccessResponse<IEnumerable<WorkOrderDto>>>> GetAllWorkOrders(CancellationToken ct)
         {
             try
@@ -64,9 +64,9 @@ namespace BusinessManagementSystem.API.Controllers
         /// Obtiene una orden de trabajo por su ID
         /// </summary>
         [HttpGet("{id}")]
-        [ProduceResponseType(StatusCodes.Status200OK)]
-        [ProduceResponseType(StatusCodes.Status404NotFound)]
-        [ProduceResponseType(StatusCodes.Status500InternalServerError)]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<ActionResult<SuccessResponse<WorkOrderDto>>> GetWorkOrderById(Guid id, CancellationToken ct)
         {
             try
@@ -102,9 +102,9 @@ namespace BusinessManagementSystem.API.Controllers
         /// Crea una nueva orden de trabajo
         /// </summary>
         [HttpPost]
-        [ProduceResponseType(StatusCodes.Status201Created)]
-        [ProduceResponseType(StatusCodes.Status400BadRequest)]
-        [ProduceResponseType(StatusCodes.Status500InternalServerError)]
+        [ProducesResponseType(StatusCodes.Status201Created)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<ActionResult<SuccessResponse<object>>> CreateWorkOrder(
             [FromBody] CreateWorkOrderDto dto,
             CancellationToken ct)
@@ -151,10 +151,10 @@ namespace BusinessManagementSystem.API.Controllers
         /// Establece el diagnóstico de una orden de trabajo
         /// </summary>
         [HttpPost("{id}/diagnosis")]
-        [ProduceResponseType(StatusCodes.Status200OK)]
-        [ProduceResponseType(StatusCodes.Status404NotFound)]
-        [ProduceResponseType(StatusCodes.Status400BadRequest)]
-        [ProduceResponseType(StatusCodes.Status500InternalServerError)]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<ActionResult<SuccessResponse<object>>> SetDiagnosis(
             Guid id,
             [FromBody] SetDiagnosisDto dto,
@@ -200,10 +200,10 @@ namespace BusinessManagementSystem.API.Controllers
         /// Inicia la reparación de una orden de trabajo
         /// </summary>
         [HttpPost("{id}/start-repair")]
-        [ProduceResponseType(StatusCodes.Status200OK)]
-        [ProduceResponseType(StatusCodes.Status404NotFound)]
-        [ProduceResponseType(StatusCodes.Status400BadRequest)]
-        [ProduceResponseType(StatusCodes.Status500InternalServerError)]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<ActionResult<SuccessResponse<object>>> StartRepair(Guid id, CancellationToken ct)
         {
             try
@@ -284,8 +284,8 @@ namespace BusinessManagementSystem.API.Controllers
         /// Obtiene órdenes de trabajo por cliente
         /// </summary>
         [HttpGet("client/{clientId}")]
-        [ProduceResponseType(StatusCodes.Status200OK)]
-        [ProduceResponseType(StatusCodes.Status500InternalServerError)]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<ActionResult<SuccessResponse<IEnumerable<WorkOrderDto>>>> GetWorkOrdersByClient(
             Guid clientId,
             CancellationToken ct)
@@ -319,8 +319,8 @@ namespace BusinessManagementSystem.API.Controllers
         /// Obtiene órdenes de trabajo asignadas a un mecánico
         /// </summary>
         [HttpGet("mechanic/{mechanicId}")]
-        [ProduceResponseType(StatusCodes.Status200OK)]
-        [ProduceResponseType(StatusCodes.Status500InternalServerError)]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<ActionResult<SuccessResponse<IEnumerable<WorkOrderDto>>>> GetWorkOrdersByMechanic(
             Guid mechanicId,
             CancellationToken ct)
