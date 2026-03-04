@@ -1,6 +1,6 @@
-# ?? Guía de Contribución - BusinessManagementSystem
+# ?? Guï¿½a de Contribuciï¿½n - BusinessManagementSystem
 
-Primero que todo, ¡gracias por tu interés en contribuir a este proyecto!
+Primero que todo, ï¿½gracias por tu interï¿½s en contribuir a este proyecto!
 
 Este documento proporciona pautas y direcciones para contribuir.
 
@@ -8,31 +8,31 @@ Este documento proporciona pautas y direcciones para contribuir.
 
 ## ?? Tabla de Contenidos
 
-- [Código de Conducta](#código-de-conducta)
-- [Cómo Contribuir](#cómo-contribuir)
+- [Cï¿½digo de Conducta](#cï¿½digo-de-conducta)
+- [Cï¿½mo Contribuir](#cï¿½mo-contribuir)
 - [Proceso de Pull Request](#proceso-de-pull-request)
-- [Estándares de Código](#estándares-de-código)
+- [Estï¿½ndares de Cï¿½digo](#estï¿½ndares-de-cï¿½digo)
 - [Convenciones de Nombres](#convenciones-de-nombres)
 - [Estructura de Commits](#estructura-de-commits)
 - [Testing](#testing)
-- [Documentación](#documentación)
+- [Documentaciï¿½n](#documentaciï¿½n)
 
 ---
 
-## ?? Código de Conducta
+## ?? Cï¿½digo de Conducta
 
-Este proyecto adhiere a un código de conducta. Al participar, se espera que:
+Este proyecto adhiere a un cï¿½digo de conducta. Al participar, se espera que:
 
 - Seas respetuoso con otros contribuidores
 - Proporciones feedback constructivo
-- Aceptes críticas constructivas
+- Aceptes crï¿½ticas constructivas
 - Enfoques en lo mejor para la comunidad
 
 ---
 
-## ?? Cómo Contribuir
+## ?? Cï¿½mo Contribuir
 
-### Tipos de Contribución Bienvenidas
+### Tipos de Contribuciï¿½n Bienvenidas
 
 1. **Reportar Bugs**
    - Describir el problema claramente
@@ -42,20 +42,20 @@ Este proyecto adhiere a un código de conducta. Al participar, se espera que:
 2. **Sugerir Mejoras**
    - Explicar el caso de uso
    - Beneficio de la mejora
-   - Posible implementación
+   - Posible implementaciï¿½n
 
 3. **Implementar Features**
    - Seguir la arquitectura DDD
    - Agregar nuevos casos de uso
    - Extender funcionalidad existente
 
-4. **Mejorar Documentación**
+4. **Mejorar Documentaciï¿½n**
    - Corregir errores
    - Agregar ejemplos
    - Mejorar claridad
 
 5. **Reportar Issues de Seguridad**
-   - ?? NO abrir issue público
+   - ?? NO abrir issue pï¿½blico
    - Contactar al autor privadamente
    - Detallar vulnerabilidad
 
@@ -91,7 +91,7 @@ git checkout -b feature/tu-feature-nombre
 
 ```bash
 # Edita los archivos necesarios
-# Sigue los estándares (ver sección abajo)
+# Sigue los estï¿½ndares (ver secciï¿½n abajo)
 # Compila y verifica
 dotnet build
 ```
@@ -99,7 +99,7 @@ dotnet build
 ### Paso 4: Commit con Mensaje Claro
 
 ```bash
-# Ver sección "Estructura de Commits" abajo
+# Ver secciï¿½n "Estructura de Commits" abajo
 git commit -m "feat: agregar notificaciones por email"
 ```
 
@@ -114,33 +114,33 @@ git push origin feature/tu-feature-nombre
 - Ve a GitHub
 - Haz clic en "New Pull Request"
 - Llena la plantilla PR
-- Describe qué cambiaste y por qué
+- Describe quï¿½ cambiaste y por quï¿½
 
 ### Paso 7: Responde Feedback
 
-- Sé receptivo a comentarios
+- Sï¿½ receptivo a comentarios
 - Haz cambios si es necesario
 - Re-pushea cambios
-- El PR se actualiza automáticamente
+- El PR se actualiza automï¿½ticamente
 
 ---
 
 ## ? Proceso de Pull Request Checklist
 
-Antes de enviar tu PR, asegúrate de:
+Antes de enviar tu PR, asegï¿½rate de:
 
 - [ ] Has forkeado el repo correctamente
-- [ ] Tu rama es basada en la última version de `main`
+- [ ] Tu rama es basada en la ï¿½ltima version de `main`
 - [ ] Has compilado sin errores: `dotnet build`
-- [ ] El código sigue los estándares (ver abajo)
+- [ ] El cï¿½digo sigue los estï¿½ndares (ver abajo)
 - [ ] Has agregado/actualizado tests si corresponde
-- [ ] Has actualizado documentación
+- [ ] Has actualizado documentaciï¿½n
 - [ ] Commit messages son claros y descriptivos
 - [ ] No hay cambios no relacionados en el PR
 
 ---
 
-## ?? Estándares de Código
+## ?? Estï¿½ndares de Cï¿½digo
 
 ### Lenguaje y Framework
 
@@ -148,7 +148,7 @@ Antes de enviar tu PR, asegúrate de:
 - **Framework**: .NET 8
 - **IDE Recomendado**: Visual Studio 2022
 
-### Convenciones de Código
+### Convenciones de Cï¿½digo
 
 ```csharp
 // ? BIEN - Naming claro
@@ -172,17 +172,17 @@ public class WORepo : IWORepo
 }
 ```
 
-### Indentación y Espaciado
+### Indentaciï¿½n y Espaciado
 
 ```csharp
-// ? 4 espacios (estándar C#)
+// ? 4 espacios (estï¿½ndar C#)
 public void MyMethod()
 {
     var result = SomeMethod();
     return result;
 }
 
-// ? Línea en blanco entre métodos
+// ? Lï¿½nea en blanco entre mï¿½todos
 public void Method1()
 {
     // code
@@ -207,7 +207,7 @@ public async Task<Guid> HandleAsync(
     // ...
 }
 
-// ? MAL - Synchronous cuando debería ser async
+// ? MAL - Synchronous cuando deberï¿½a ser async
 public Guid Handle(IRepository repo, Command cmd)
 {
     var entity = repo.GetById(cmd.Id);
@@ -229,18 +229,18 @@ if (price < 0)
 var item = new Item(name, price);
 ```
 
-### Documentación
+### Documentaciï¿½n
 
 ```csharp
 // ? BIEN - XML Comments
 /// <summary>
 /// Crea una nueva orden de trabajo.
 /// </summary>
-/// <param name="repo">Repositorio de órdenes.</param>
+/// <param name="repo">Repositorio de ï¿½rdenes.</param>
 /// <param name="cmd">Comando con datos de entrada.</param>
-/// <param name="ct">Token de cancelación.</param>
+/// <param name="ct">Token de cancelaciï¿½n.</param>
 /// <returns>ID de la nueva orden creada.</returns>
-/// <exception cref="InvalidOperationException">Si el número ya existe.</exception>
+/// <exception cref="InvalidOperationException">Si el nï¿½mero ya existe.</exception>
 public static async Task<Guid> HandleAsync(
     IWorkOrderRepository repo,
     Command cmd,
@@ -249,7 +249,7 @@ public static async Task<Guid> HandleAsync(
     // Implementation
 }
 
-// ? MAL - Sin documentación
+// ? MAL - Sin documentaciï¿½n
 public static async Task<Guid> HandleAsync(...)
 {
     // Implementation
@@ -259,11 +259,11 @@ public static async Task<Guid> HandleAsync(...)
 ### Manejo de Errores
 
 ```csharp
-// ? BIEN - Mensajes descriptivos en español
+// ? BIEN - Mensajes descriptivos en espaï¿½ol
 if (item is null)
-    throw new InvalidOperationException("No se encontró el repuesto en el catálogo.");
+    throw new InvalidOperationException("No se encontrï¿½ el repuesto en el catï¿½logo.");
 
-// ? MAL - Mensajes genéricos
+// ? MAL - Mensajes genï¿½ricos
 if (item is null)
     throw new Exception("Error");
 ```
@@ -308,7 +308,7 @@ var workOrderId = Guid.NewGuid();
 var isPresent = true;
 var clientName = "Juan";
 
-// ? PascalCase para propiedades públicas
+// ? PascalCase para propiedades pï¿½blicas
 public string FullName { get; set; }
 public Guid Id { get; private set; }
 
@@ -323,7 +323,7 @@ var work_order_id = Guid.NewGuid();
 Usa el formato [Conventional Commits](https://www.conventionalcommits.org/):
 
 ```
-<tipo>(<alcance>): <descripción>
+<tipo>(<alcance>): <descripciï¿½n>
 
 <cuerpo opcional>
 
@@ -333,10 +333,10 @@ Usa el formato [Conventional Commits](https://www.conventionalcommits.org/):
 ### Tipos
 
 - `feat`: Nueva funcionalidad
-- `fix`: Corrección de bug
-- `docs`: Cambios en documentación
-- `style`: Cambios de formato, no lógica
-- `refactor`: Refactorización sin cambios de features
+- `fix`: Correcciï¿½n de bug
+- `docs`: Cambios en documentaciï¿½n
+- `style`: Cambios de formato, no lï¿½gica
+- `refactor`: Refactorizaciï¿½n sin cambios de features
 - `perf`: Mejoras de performance
 - `test`: Agregar o actualizar tests
 - `chore`: Cambios en build, deps, etc
@@ -345,13 +345,13 @@ Usa el formato [Conventional Commits](https://www.conventionalcommits.org/):
 
 ```bash
 # ? Bueno
-git commit -m "feat(work-orders): agregar validación de período de garantía"
-git commit -m "fix(clients): corregir duplicación de teléfono en búsqueda"
-git commit -m "docs: mejorar ejemplos en guía de uso"
+git commit -m "feat(work-orders): agregar validaciï¿½n de perï¿½odo de garantï¿½a"
+git commit -m "fix(clients): corregir duplicaciï¿½n de telï¿½fono en bï¿½squeda"
+git commit -m "docs: mejorar ejemplos en guï¿½a de uso"
 git commit -m "test(application): agregar tests para ApproveWorkOrder"
 
 # ? Malo
-git commit -m "arreglé cosas"
+git commit -m "arreglï¿½ cosas"
 git commit -m "Updates"
 git commit -m "fix bug"
 ```
@@ -366,7 +366,7 @@ git commit -m "fix bug"
 # Todos los tests
 dotnet test
 
-# Tests de un proyecto específico
+# Tests de un proyecto especï¿½fico
 dotnet test ./tests/BusinessManagementSystem.Application.Tests
 
 # Tests con cobertura
@@ -376,7 +376,7 @@ dotnet test /p:CollectCoverage=true
 ### Agregar Nuevos Tests
 
 1. Crear clase de test
-2. Usar patrón AAA (Arrange, Act, Assert)
+2. Usar patrï¿½n AAA (Arrange, Act, Assert)
 3. Nombres descriptivos
 
 ```csharp
@@ -419,16 +419,16 @@ public class CreateWorkOrderTests
 
 ### Target de Cobertura
 
-- Mínimo: 70%
+- Mï¿½nimo: 70%
 - Meta: 85%
 - Domain Layer: 100%
 - Application Layer: 90%+
 
 ---
 
-## ?? Documentación
+## ?? Documentaciï¿½n
 
-### Documentación Requerida
+### Documentaciï¿½n Requerida
 
 1. **Cambios en funcionalidad**
    - Actualizar CASOS_DE_USO_IMPLEMENTADOS.md
@@ -442,22 +442,22 @@ public class CreateWorkOrderTests
    - Actualizar Swagger docs
    - Actualizar README.md
 
-### Formato de Documentación
+### Formato de Documentaciï¿½n
 
 ```markdown
 ## Nueva Funcionalidad
 
-### Descripción
-Explicar qué se agregó y por qué.
+### Descripciï¿½n
+Explicar quï¿½ se agregï¿½ y por quï¿½.
 
 ### Ejemplo de Uso
 \`\`\`csharp
-// Código de ejemplo
+// Cï¿½digo de ejemplo
 \`\`\`
 
 ### Validaciones
-- Validación 1
-- Validación 2
+- Validaciï¿½n 1
+- Validaciï¿½n 2
 
 ### Related Issues
 Closes #123
@@ -465,33 +465,33 @@ Closes #123
 
 ---
 
-## ?? Revisión de Código
+## ?? Revisiï¿½n de Cï¿½digo
 
-### Qué Busco en un PR
+### Quï¿½ Busco en un PR
 
 ? **Bueno**:
-- Código limpio y legible
+- Cï¿½digo limpio y legible
 - Sigue arquitectura DDD
 - Validaciones exhaustivas
-- Documentación completa
+- Documentaciï¿½n completa
 - Tests relevantes
 - Mensajes de commit claros
 
-? **Problemático**:
-- Código complicado o poco claro
+? **Problemï¿½tico**:
+- Cï¿½digo complicado o poco claro
 - Viola la arquitectura
 - Falta validaciones
-- Sin documentación
+- Sin documentaciï¿½n
 - Sin tests
 - Commits confusos
 
 ### Proceso de Review
 
-1. Revisión automática (compilación, linting)
-2. Revisión manual del código
-3. Verificación de tests
+1. Revisiï¿½n automï¿½tica (compilaciï¿½n, linting)
+2. Revisiï¿½n manual del cï¿½digo
+3. Verificaciï¿½n de tests
 4. Feedback y mejoras
-5. Aprobación y merge
+5. Aprobaciï¿½n y merge
 
 ---
 
@@ -500,8 +500,8 @@ Closes #123
 ### Plantilla de Issue
 
 ```markdown
-## Descripción
-Descripción clara del bug.
+## Descripciï¿½n
+Descripciï¿½n clara del bug.
 
 ## Pasos para Reproducir
 1. Paso 1
@@ -509,10 +509,10 @@ Descripción clara del bug.
 3. Paso 3
 
 ## Comportamiento Esperado
-Qué debería pasar.
+Quï¿½ deberï¿½a pasar.
 
 ## Comportamiento Actual
-Qué realmente pasa.
+Quï¿½ realmente pasa.
 
 ## Entorno
 - S.O.: [Windows 10 / macOS / Linux]
@@ -535,36 +535,36 @@ Si es aplicable.
 ### Plantilla de Feature Request
 
 ```markdown
-## Descripción
-Descripción clara de la mejora.
+## Descripciï¿½n
+Descripciï¿½n clara de la mejora.
 
 ## Caso de Uso
-Por qué se necesita.
+Por quï¿½ se necesita.
 
-## Solución Propuesta
-Cómo implementarlo.
+## Soluciï¿½n Propuesta
+Cï¿½mo implementarlo.
 
 ## Alternativas Consideradas
 Otros enfoques.
 
 ## Contexto Adicional
-Información relevante.
+Informaciï¿½n relevante.
 ```
 
 ---
 
-## ?? Comunicación
+## ?? Comunicaciï¿½n
 
 ### Canales
 
 - **Issues**: Reportar bugs, features, preguntas
 - **Discussions**: Conversaciones generales
-- **Pull Requests**: Cambios de código
+- **Pull Requests**: Cambios de cï¿½digo
 
 ### Esperado
 
 - Respuestas dentro de 48 horas
-- Comunicación clara y respetuosa
+- Comunicaciï¿½n clara y respetuosa
 - Feedback constructivo
 
 ---
@@ -584,7 +584,7 @@ dotnet build
 # 3. Correr tests
 dotnet test
 
-# 4. Revisar código
+# 4. Revisar cï¿½digo
 # (Visual Studio / VS Code)
 
 # 5. Verificar cambios
@@ -592,7 +592,7 @@ git status
 git diff
 
 # 6. Commit
-git commit -m "tipo(alcance): descripción"
+git commit -m "tipo(alcance): descripciï¿½n"
 
 # 7. Push
 git push origin feature/tu-rama
@@ -600,7 +600,7 @@ git push origin feature/tu-rama
 
 ---
 
-## ?? Ejemplos Prácticos
+## ?? Ejemplos Prï¿½cticos
 
 ### Ejemplo 1: Agregar Nuevo Caso de Uso
 
@@ -609,10 +609,10 @@ git push origin feature/tu-rama
 git checkout -b feature/add-print-work-order
 
 # 2. Crear archivo
-touch src/Application/BusinessManagementSystem.Application/WorkOrders/PrintWorkOrder.cs
+touch BusinessManagementSystem/src/Application/BusinessManagementSystem.Application/WorkOrders/PrintWorkOrder.cs
 
 # 3. Implementar
-# (Ver GUIA_DE_USO_CASOS_DE_USO.md para patrón)
+# (Ver GUIA_DE_USO_CASOS_DE_USO.md para patrï¿½n)
 
 # 4. Actualizar tests
 # (Agregar tests)
@@ -635,7 +635,7 @@ git push origin feature/add-print-work-order
 git checkout -b fix/warranty-validation-bug
 
 # 2. Localizar bug
-# (En este ejemplo: cálculo de garantía incorrecto)
+# (En este ejemplo: cï¿½lculo de garantï¿½a incorrecto)
 
 # 3. Escribir test que falla
 # (Reproduce el bug)
@@ -647,7 +647,7 @@ git checkout -b fix/warranty-validation-bug
 dotnet test
 
 # 6. Commit
-git commit -m "fix(work-orders): corregir cálculo de período de garantía"
+git commit -m "fix(work-orders): corregir cï¿½lculo de perï¿½odo de garantï¿½a"
 
 # 7. Push y PR
 git push origin fix/warranty-validation-bug
@@ -657,25 +657,25 @@ git push origin fix/warranty-validation-bug
 
 ## ?? Reconocimiento
 
-¡Agradezco las contribuciones!
+ï¿½Agradezco las contribuciones!
 
-Los contribuidores serán reconocidos en:
-- README.md (sección Contributors)
+Los contribuidores serï¿½n reconocidos en:
+- README.md (secciï¿½n Contributors)
 - Changelog
 - Releases notes
 
 ---
 
-## ?? Más Información
+## ?? Mï¿½s Informaciï¿½n
 
-- [README.md](./README.md) - Guía principal
-- [INDICE_DOCUMENTACION.md](./INDICE_DOCUMENTACION.md) - Documentación
+- [README.md](./README.md) - Guï¿½a principal
+- [INDICE_DOCUMENTACION.md](./INDICE_DOCUMENTACION.md) - Documentaciï¿½n
 - [CASOS_DE_USO_IMPLEMENTADOS.md](./CASOS_DE_USO_IMPLEMENTADOS.md) - UCs
 - [GUIA_DE_USO_CASOS_DE_USO.md](./GUIA_DE_USO_CASOS_DE_USO.md) - Ejemplos
 
 ---
 
-**¡Gracias por considerar contribuir! ??**
+**ï¿½Gracias por considerar contribuir! ??**
 
 Esperamos trabajar contigo para mejorar este proyecto.
 
