@@ -1,7 +1,7 @@
 using Microsoft.OpenApi.Models;
 using BusinessManagementSystem.Infrastructure.Extensions;
 
-var builder = WebApplicationBuilder.CreateBuilder(args);
+var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container
 builder.Services.AddControllers();
@@ -12,12 +12,12 @@ builder.Services.AddSwaggerGen(options =>
 {
     options.SwaggerDoc("v1", new OpenApiInfo
     {
-        Title = "A Y R Servicio Técnico - API REST",
+        Title = "A Y R Servicio Tï¿½cnico - API REST",
         Version = "v1.0.0",
-        Description = "Sistema de gestión de órdenes de trabajo para talleres de reparación",
+        Description = "Sistema de gestiï¿½n de ï¿½rdenes de trabajo para talleres de reparaciï¿½n",
         Contact = new OpenApiContact
         {
-            Name = "A Y R Servicio Técnico",
+            Name = "A Y R Servicio Tï¿½cnico",
             Email = "info@ayrservicio.com"
         },
         License = new OpenApiLicense
@@ -52,7 +52,7 @@ builder.Services.AddSwaggerGen(options =>
         }
     });
 
-    // Comentarios XML en documentación
+    // Comentarios XML en documentaciï¿½n
     var xmlFile = $"{System.Reflection.Assembly.GetExecutingAssembly().GetName().Name}.xml";
     var xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFile);
     if (File.Exists(xmlPath))
@@ -85,11 +85,11 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI(c =>
     {
         c.SwaggerEndpoint("/swagger/v1/swagger.json", "A Y R API v1");
-        c.RoutePrefix = string.Empty; // Swagger en la raíz
+        c.RoutePrefix = string.Empty; // Swagger en la raï¿½z
     });
 }
 
-// Aplicar migraciones automáticamente
+// Aplicar migraciones automï¿½ticamente
 try
 {
     await app.Services.ApplyMigrationsAsync();
@@ -100,7 +100,7 @@ catch (Exception ex)
     Console.WriteLine($"? Error al aplicar migraciones: {ex.Message}");
 }
 
-// Verificar conexión a BD
+// Verificar conexiï¿½n a BD
 try
 {
     var connected = await app.Services.VerifyDatabaseConnectionAsync();
@@ -109,7 +109,7 @@ try
 }
 catch (Exception ex)
 {
-    Console.WriteLine($"?? Error de conexión a BD: {ex.Message}");
+    Console.WriteLine($"?? Error de conexiï¿½n a BD: {ex.Message}");
 }
 
 app.UseHttpsRedirection();

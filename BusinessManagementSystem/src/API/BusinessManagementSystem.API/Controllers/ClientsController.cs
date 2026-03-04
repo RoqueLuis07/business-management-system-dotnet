@@ -36,7 +36,7 @@ namespace BusinessManagementSystem.API.Controllers
             {
                 _logger.LogInformation("Obteniendo todos los clientes");
 
-                var result = await GetAllClients.HandleAsync(_repository, new GetAllClients.Query(), ct);
+                var result = await BusinessManagementSystem.Application.Clients.GetAllClients.HandleAsync(_repository, new BusinessManagementSystem.Application.Clients.GetAllClients.Query(), ct);
 
                 var dtos = result.Select(r => new ClientDto(
                     r.Id,
@@ -114,22 +114,21 @@ namespace BusinessManagementSystem.API.Controllers
 
                 _logger.LogInformation("Creando nuevo cliente: {ClientName}", dto.FullName);
 
-                var command = new CreateClient.Command(
+                var command = new BusinessManagementSystem.Application.Clients.CreateClient.Command(
                     dto.FullName,
                     dto.Phone,
-                    dto.Email,
                     dto.Address
                 );
 
-                await CreateClient.HandleAsync(_repository, command, ct);
+                await BusinessManagementSystem.Application.Clients.CreateClient.HandleAsync(_repository, command, ct);
 
                 return CreatedAtAction(nameof(GetClientById), new { id = Guid.NewGuid() },
                     new SuccessResponse<object>(true, null, "Cliente creado exitosamente"));
             }
             catch (ArgumentException ex)
             {
-                _logger.LogWarning(ex, "Error de validación al crear cliente");
-                return BadRequest(new ErrorResponse(400, "Error de validación", ex.Message));
+                _logger.LogWarning(ex, "Error de validaciï¿½n al crear cliente");
+                return BadRequest(new ErrorResponse(400, "Error de validaciï¿½n", ex.Message));
             }
             catch (Exception ex)
             {
@@ -168,7 +167,7 @@ namespace BusinessManagementSystem.API.Controllers
             }
             catch (ArgumentException ex)
             {
-                return BadRequest(new ErrorResponse(400, "Error de validación", ex.Message));
+                return BadRequest(new ErrorResponse(400, "Error de validaciï¿½n", ex.Message));
             }
             catch (Exception ex)
             {

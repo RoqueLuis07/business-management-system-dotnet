@@ -4,7 +4,7 @@ using BusinessManagementSystem.Domain.Entities;
 namespace BusinessManagementSystem.Infrastructure.Data
 {
     /// <summary>
-    /// Entity Framework Core DbContext para A Y R Servicio Técnico
+    /// Entity Framework Core DbContext para A Y R Servicio Tï¿½cnico
     /// </summary>
     public class ApplicationDbContext : DbContext
     {
@@ -26,7 +26,7 @@ namespace BusinessManagementSystem.Infrastructure.Data
             base.OnModelCreating(modelBuilder);
 
             // ============================================
-            // CONFIGURACIÓN DE CLIENT
+            // CONFIGURACIï¿½N DE CLIENT
             // ============================================
             modelBuilder.Entity<Client>(entity =>
             {
@@ -56,7 +56,7 @@ namespace BusinessManagementSystem.Infrastructure.Data
                     .HasColumnType("timestamp with time zone")
                     .HasDefaultValueSql("NOW()");
 
-                // Índices
+                // ï¿½ndices
                 entity.HasIndex(e => e.Phone)
                     .IsUnique()
                     .HasName("idx_client_phone");
@@ -69,7 +69,7 @@ namespace BusinessManagementSystem.Infrastructure.Data
             });
 
             // ============================================
-            // CONFIGURACIÓN DE EQUIPMENT
+            // CONFIGURACIï¿½N DE EQUIPMENT
             // ============================================
             modelBuilder.Entity<Equipment>(entity =>
             {
@@ -97,7 +97,7 @@ namespace BusinessManagementSystem.Infrastructure.Data
                     .HasColumnType("timestamp with time zone")
                     .HasDefaultValueSql("NOW()");
 
-                // Índices
+                // ï¿½ndices
                 entity.HasIndex(e => e.Type)
                     .HasName("idx_equipment_type");
 
@@ -106,7 +106,7 @@ namespace BusinessManagementSystem.Infrastructure.Data
             });
 
             // ============================================
-            // CONFIGURACIÓN DE USER
+            // CONFIGURACIï¿½N DE USER
             // ============================================
             modelBuilder.Entity<User>(entity =>
             {
@@ -137,7 +137,7 @@ namespace BusinessManagementSystem.Infrastructure.Data
                     .HasColumnType("timestamp with time zone")
                     .HasDefaultValueSql("NOW()");
 
-                // Índices
+                // ï¿½ndices
                 entity.HasIndex(e => e.Email)
                     .IsUnique()
                     .HasName("idx_user_email");
@@ -150,7 +150,7 @@ namespace BusinessManagementSystem.Infrastructure.Data
             });
 
             // ============================================
-            // CONFIGURACIÓN DE WORK ORDER
+            // CONFIGURACIï¿½N DE WORK ORDER
             // ============================================
             modelBuilder.Entity<WorkOrder>(entity =>
             {
@@ -191,25 +191,26 @@ namespace BusinessManagementSystem.Infrastructure.Data
                     .HasColumnType("timestamp with time zone");
 
                 // Relaciones
-                entity.Property<Guid>("ClientId")
+                // map foreign key properties explicitly to avoid shadow properties
+                entity.Property(e => e.ClientId)
                     .IsRequired();
 
-                entity.Property<Guid>("EquipmentId")
+                entity.Property(e => e.EquipmentId)
                     .IsRequired();
 
-                entity.HasOne<Client>()
+                entity.HasOne(e => e.Client)
                     .WithMany()
-                    .HasForeignKey("ClientId")
+                    .HasForeignKey(e => e.ClientId)
                     .OnDelete(DeleteBehavior.Restrict)
                     .HasConstraintName("fk_workorder_client");
 
-                entity.HasOne<Equipment>()
+                entity.HasOne(e => e.Equipment)
                     .WithMany()
-                    .HasForeignKey("EquipmentId")
+                    .HasForeignKey(e => e.EquipmentId)
                     .OnDelete(DeleteBehavior.Restrict)
                     .HasConstraintName("fk_workorder_equipment");
 
-                // Índices
+                // ï¿½ndices
                 entity.HasIndex(e => e.WorkOrderNumber)
                     .IsUnique()
                     .HasName("idx_workorder_number");
@@ -228,7 +229,7 @@ namespace BusinessManagementSystem.Infrastructure.Data
             });
 
             // ============================================
-            // CONFIGURACIÓN DE PART CATALOG ITEM
+            // CONFIGURACIï¿½N DE PART CATALOG ITEM
             // ============================================
             modelBuilder.Entity<PartCatalogItem>(entity =>
             {
@@ -254,7 +255,7 @@ namespace BusinessManagementSystem.Infrastructure.Data
                     .HasColumnType("timestamp with time zone")
                     .HasDefaultValueSql("NOW()");
 
-                // Índices
+                // ï¿½ndices
                 entity.HasIndex(e => e.Name)
                     .IsUnique()
                     .HasName("idx_partcatalog_name");
@@ -264,7 +265,7 @@ namespace BusinessManagementSystem.Infrastructure.Data
             });
 
             // ============================================
-            // CONFIGURACIÓN DE WARRANTY CLAIM
+            // CONFIGURACIï¿½N DE WARRANTY CLAIM
             // ============================================
             modelBuilder.Entity<WarrantyClaim>(entity =>
             {
@@ -300,7 +301,7 @@ namespace BusinessManagementSystem.Infrastructure.Data
                     .OnDelete(DeleteBehavior.Restrict)
                     .HasConstraintName("fk_warrantyclaim_claim");
 
-                // Índices
+                // ï¿½ndices
                 entity.HasIndex("OriginalWorkOrderId")
                     .HasName("idx_warrantyclaim_original");
 
@@ -309,7 +310,7 @@ namespace BusinessManagementSystem.Infrastructure.Data
             });
 
             // ============================================
-            // CONFIGURACIÓN DE WORK ORDER ACCESSORIES (OWNED TYPE)
+            // CONFIGURACIï¿½N DE WORK ORDER ACCESSORIES (OWNED TYPE)
             // ============================================
             modelBuilder.Entity<WorkOrder>()
                 .OwnsMany(w => w.Accessories, a =>
@@ -319,11 +320,11 @@ namespace BusinessManagementSystem.Infrastructure.Data
                     a.HasKey("Id");
                     a.Property(x => x.Name).HasMaxLength(255).IsRequired();
                     a.Property(x => x.Condition).HasMaxLength(255);
-                    a.HasIndex("WorkOrderId").HasName("idx_accessory_workorderid");
+                    a.HasIndex("WorkOrderId").HasDatabaseName("idx_accessory_workorderid");
                 });
 
             // ============================================
-            // CONFIGURACIÓN DE WORK ORDER PARTS (OWNED TYPE)
+            // CONFIGURACIï¿½N DE WORK ORDER PARTS (OWNED TYPE)
             // ============================================
             modelBuilder.Entity<WorkOrder>()
                 .OwnsMany(w => w.Parts, p =>
@@ -331,13 +332,13 @@ namespace BusinessManagementSystem.Infrastructure.Data
                     p.ToTable("WorkOrderParts");
                     p.WithOwner().HasForeignKey("WorkOrderId");
                     p.HasKey("Id");
-                    p.Property(x => x.Name).HasMaxLength(255).IsRequired();
+                    p.Property(x => x.PartName).HasMaxLength(255).IsRequired();
                     p.Property(x => x.UnitPrice).HasPrecision(15, 2);
-                    p.HasIndex("WorkOrderId").HasName("idx_part_workorderid");
+                    p.HasIndex("WorkOrderId").HasDatabaseName("idx_part_workorderid");
                 });
 
             // ============================================
-            // CONFIGURACIÓN DE WORK ORDER DIAGNOSIS (OWNED TYPE)
+            // CONFIGURACIï¿½N DE WORK ORDER DIAGNOSIS (OWNED TYPE)
             // ============================================
             modelBuilder.Entity<WorkOrder>()
                 .OwnsOne(w => w.Diagnosis, d =>
@@ -351,7 +352,7 @@ namespace BusinessManagementSystem.Infrastructure.Data
                 });
 
             // ============================================
-            // CONFIGURACIÓN DE WORK ORDER QUOTE (OWNED TYPE)
+            // CONFIGURACIï¿½N DE WORK ORDER QUOTE (OWNED TYPE)
             // ============================================
             modelBuilder.Entity<WorkOrder>()
                 .OwnsOne(w => w.Quote, q =>
@@ -365,7 +366,7 @@ namespace BusinessManagementSystem.Infrastructure.Data
                 });
 
             // ============================================
-            // CONFIGURACIÓN DE WORK ORDER SERVICE REPORT (OWNED TYPE)
+            // CONFIGURACIï¿½N DE WORK ORDER SERVICE REPORT (OWNED TYPE)
             // ============================================
             modelBuilder.Entity<WorkOrder>()
                 .OwnsOne(w => w.ServiceReport, sr =>

@@ -1,112 +1,64 @@
 using Microsoft.AspNetCore.Mvc;
 using BusinessManagementSystem.Application.Abstractions;
 using BusinessManagementSystem.API.DTOs;
+using BusinessManagementSystem.Domain.Entities;
 
 namespace BusinessManagementSystem.API.Controllers
 {
-    /// <summary>
-    /// Controller para gestionar catálogo de repuestos
-    /// </summary>
     [ApiController]
     [Route("api/[controller]")]
     [Produces("application/json")]
     public class PartCatalogController : ControllerBase
     {
-        private readonly IPartCatalogRepository _repository;
+        private readonly IPartCatalogRepository _repo;
         private readonly ILogger<PartCatalogController> _logger;
 
-        public PartCatalogController(IPartCatalogRepository repository, ILogger<PartCatalogController> logger)
+        public PartCatalogController(IPartCatalogRepository repo, ILogger<PartCatalogController> logger)
         {
-            _repository = repository ?? throw new ArgumentNullException(nameof(repository));
+            _repo = repo ?? throw new ArgumentNullException(nameof(repo));
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
         }
 
-        /// <summary>
-        /// Obtiene todos los repuestos
-        /// </summary>
         [HttpGet]
-        [ProducesResponseType(StatusCodes.Status200OK)]
-        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        public async Task<ActionResult<SuccessResponse<object>>> GetAllParts(CancellationToken ct)
+        public async Task<ActionResult<SuccessResponse<IEnumerable<PartDto>>>> GetAll(CancellationToken ct)
         {
-            try
-            {
-                _logger.LogInformation("Obteniendo catálogo de repuestos");
-                var parts = await _repository.GetAllAsync(ct);
-                return Ok(new SuccessResponse<object>(true, parts, "Repuestos obtenidos"));
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(ex, "Error al obtener repuestos");
-                return StatusCode(500, new ErrorResponse(500, "Error interno del servidor", ex.Message));
-            }
+            var items = await _repo.GetAllAsync(ct);
+            var dtos = items.Select(p => new PartDto(p.Id, p.Name, p.Description, p.DefaultUnitPrice, p.IsActive, p.CreatedAtUtc));
+            return Ok(new SuccessResponse<IEnumerable<PartDto>>(true, dtos));
         }
 
-        /// <summary>
-        /// Obtiene solo repuestos activos
-        /// </summary>
         [HttpGet("active")]
-        [ProducesResponseType(StatusCodes.Status200OK)]
-        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        public async Task<ActionResult<SuccessResponse<object>>> GetActiveParts(CancellationToken ct)
+        public async Task<ActionResult<SuccessResponse<IEnumerable<PartDto>>>> GetActive(CancellationToken ct)
         {
-            try
-            {
-                _logger.LogInformation("Obteniendo repuestos activos");
-                var parts = await _repository.GetActiveAsync(ct);
-                return Ok(new SuccessResponse<object>(true, parts, "Repuestos activos obtenidos"));
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(ex, "Error al obtener repuestos activos");
-                return StatusCode(500, new ErrorResponse(500, "Error interno del servidor", ex.Message));
-            }
+            var items = await _repo.GetActiveAsync(ct);
+            var dtos = items.Select(p => new PartDto(p.Id, p.Name, p.Description, p.DefaultUnitPrice, p.IsActive, p.CreatedAtUtc));
+            return Ok(new SuccessResponse<IEnumerable<PartDto>>(true, dtos));
         }
 
-        /// <summary>
-        /// Obtiene un repuesto por su ID
-        /// </summary>
         [HttpGet("{id}")]
-        [ProducesResponseType(StatusCodes.Status200OK)]
-        [ProducesResponseType(StatusCodes.Status404NotFound)]
-        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        public async Task<ActionResult<SuccessResponse<object>>> GetPartById(Guid id, CancellationToken ct)
+        public async Task<ActionResult<SuccessResponse<PartDto>>> GetById(Guid id, CancellationToken ct)
         {
-            try
-            {
-                var part = await _repository.GetByIdAsync(id, ct);
-                if (part is null)
-                    return NotFound(new ErrorResponse(404, "Repuesto no encontrado"));
-
-                return Ok(new SuccessResponse<object>(true, part));
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(ex, "Error al obtener repuesto");
-                return StatusCode(500, new ErrorResponse(500, "Error interno del servidor", ex.Message));
-            }
+            var item = await _repo.GetByIdAsync(id, ct);
+            if (item is null) return NotFound(new ErrorResponse(404, "Repuesto no encontrado"));
+            var dto = new PartDto(item.Id, item.Name, item.Description, item.DefaultUnitPrice, item.IsActive, item.CreatedAtUtc);
+            return Ok(new SuccessResponse<PartDto>(true, dto));
         }
 
-        /// <summary>
-        /// Obtiene un repuesto por su nombre
-        /// </summary>
-        [HttpGet("name/{name}")]
-        [ProducesResponseType(StatusCodes.Status200OK)]
-        [ProducesResponseType(StatusCodes.Status404NotFound)]
-        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        public async Task<ActionResult<SuccessResponse<object>>> GetPartByName(string name, CancellationToken ct)
+        [HttpPost]
+        public async Task<ActionResult<SuccessResponse<object>>> Create([FromBody] CreatePartDto dto, CancellationToken ct)
         {
             try
             {
-                var part = await _repository.GetByNameAsync(name, ct);
-                if (part is null)
-                    return NotFound(new ErrorResponse(404, "Repuesto no encontrado"));
+                var existing = await _repo.GetByNameAsync(dto.Name, ct);
+                if (existing is not null) return BadRequest(new ErrorResponse(400, "Repuesto ya existe"));
 
-                return Ok(new SuccessResponse<object>(true, part));
+                var item = new PartCatalogItem(dto.Name, dto.Description, dto.DefaultUnitPrice);
+                await _repo.AddAsync(item, ct);
+                return CreatedAtAction(nameof(GetById), new { id = item.Id }, new SuccessResponse<object>(true, null, "Repuesto creado"));
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "Error al obtener repuesto");
+                _logger.LogError(ex, "Error creando repuesto");
                 return StatusCode(500, new ErrorResponse(500, "Error interno del servidor", ex.Message));
             }
         }

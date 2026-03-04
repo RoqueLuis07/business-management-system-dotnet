@@ -7,7 +7,7 @@ using BusinessManagementSystem.Domain.Entities;
 namespace BusinessManagementSystem.API.Controllers
 {
     /// <summary>
-    /// Controller para gestionar órdenes de trabajo
+    /// Controller para gestionar ï¿½rdenes de trabajo
     /// </summary>
     [ApiController]
     [Route("api/[controller]")]
@@ -29,7 +29,7 @@ namespace BusinessManagementSystem.API.Controllers
         }
 
         /// <summary>
-        /// Obtiene todas las órdenes de trabajo
+        /// Obtiene todas las ï¿½rdenes de trabajo
         /// </summary>
         [HttpGet]
         [ProducesResponseType(StatusCodes.Status200OK)]
@@ -38,9 +38,9 @@ namespace BusinessManagementSystem.API.Controllers
         {
             try
             {
-                _logger.LogInformation("Obteniendo todas las órdenes de trabajo");
+                _logger.LogInformation("Obteniendo todas las ï¿½rdenes de trabajo");
 
-                var result = await GetAllWorkOrders.HandleAsync(_workOrderRepo, new GetAllWorkOrders.Query(), ct);
+                var result = await BusinessManagementSystem.Application.WorkOrders.GetAllWorkOrders.HandleAsync(_workOrderRepo, new BusinessManagementSystem.Application.WorkOrders.GetAllWorkOrders.Query(), ct);
 
                 var dtos = result.Select(r => new WorkOrderDto(
                     r.Id,
@@ -51,11 +51,11 @@ namespace BusinessManagementSystem.API.Controllers
                     r.CreatedAtUtc
                 )).ToList();
 
-                return Ok(new SuccessResponse<IEnumerable<WorkOrderDto>>(true, dtos, "Órdenes obtenidas"));
+                return Ok(new SuccessResponse<IEnumerable<WorkOrderDto>>(true, dtos, "ï¿½rdenes obtenidas"));
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "Error al obtener órdenes de trabajo");
+                _logger.LogError(ex, "Error al obtener ï¿½rdenes de trabajo");
                 return StatusCode(500, new ErrorResponse(500, "Error interno del servidor", ex.Message));
             }
         }
@@ -112,7 +112,7 @@ namespace BusinessManagementSystem.API.Controllers
             try
             {
                 if (string.IsNullOrWhiteSpace(dto.WorkOrderNumber))
-                    return BadRequest(new ErrorResponse(400, "El número de OT es obligatorio"));
+                    return BadRequest(new ErrorResponse(400, "El nï¿½mero de OT es obligatorio"));
 
                 _logger.LogInformation("Creando nueva orden: {WorkOrderNumber}", dto.WorkOrderNumber);
 
@@ -120,25 +120,30 @@ namespace BusinessManagementSystem.API.Controllers
                 if (client is null)
                     return BadRequest(new ErrorResponse(400, "Cliente no encontrado"));
 
-                // Aquí iría la lógica para obtener el Equipment
+                // Aquï¿½ irï¿½a la lï¿½gica para obtener el Equipment
                 // Por ahora, asumimos que existe
 
-                var command = new CreateWorkOrder.Command(
+                var command = new BusinessManagementSystem.Application.WorkOrders.CreateWorkOrder.Command(
                     dto.WorkOrderNumber,
-                    dto.ClientId,
-                    dto.EquipmentId,
+                    dto.ClientFullName,
+                    dto.ClientPhone,
+                    dto.ClientAddress,
+                    dto.EquipmentType,
+                    dto.EquipmentBrand,
+                    dto.EquipmentModel,
+                    dto.EquipmentSerialNumber,
                     dto.RequestedWorkDescription
                 );
 
-                await CreateWorkOrder.HandleAsync(_workOrderRepo, _clientRepo, command, ct);
+                await BusinessManagementSystem.Application.WorkOrders.CreateWorkOrder.HandleAsync(_workOrderRepo, command, ct);
 
                 return CreatedAtAction(nameof(GetWorkOrderById), new { id = Guid.NewGuid() },
                     new SuccessResponse<object>(true, null, "Orden creada exitosamente"));
             }
             catch (ArgumentException ex)
             {
-                _logger.LogWarning(ex, "Error de validación al crear orden");
-                return BadRequest(new ErrorResponse(400, "Error de validación", ex.Message));
+                _logger.LogWarning(ex, "Error de validaciï¿½n al crear orden");
+                return BadRequest(new ErrorResponse(400, "Error de validaciï¿½n", ex.Message));
             }
             catch (Exception ex)
             {
@@ -148,7 +153,7 @@ namespace BusinessManagementSystem.API.Controllers
         }
 
         /// <summary>
-        /// Establece el diagnóstico de una orden de trabajo
+        /// Establece el diagnï¿½stico de una orden de trabajo
         /// </summary>
         [HttpPost("{id}/diagnosis")]
         [ProducesResponseType(StatusCodes.Status200OK)]
@@ -166,7 +171,7 @@ namespace BusinessManagementSystem.API.Controllers
                 if (workOrder is null)
                     return NotFound(new ErrorResponse(404, "Orden no encontrada"));
 
-                _logger.LogInformation("Estableciendo diagnóstico para orden {WorkOrderId}", id);
+                _logger.LogInformation("Estableciendo diagnï¿½stico para orden {WorkOrderId}", id);
 
                 var command = new SetWorkOrderDiagnosis.Command(
                     id,
@@ -178,11 +183,11 @@ namespace BusinessManagementSystem.API.Controllers
 
                 await SetWorkOrderDiagnosis.HandleAsync(_workOrderRepo, command, ct);
 
-                return Ok(new SuccessResponse<object>(true, null, "Diagnóstico establecido"));
+                return Ok(new SuccessResponse<object>(true, null, "Diagnï¿½stico establecido"));
             }
             catch (ArgumentException ex)
             {
-                return BadRequest(new ErrorResponse(400, "Error de validación", ex.Message));
+                return BadRequest(new ErrorResponse(400, "Error de validaciï¿½n", ex.Message));
             }
             catch (InvalidOperationException ex)
             {
@@ -191,13 +196,13 @@ namespace BusinessManagementSystem.API.Controllers
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "Error al establecer diagnóstico");
+                _logger.LogError(ex, "Error al establecer diagnï¿½stico");
                 return StatusCode(500, new ErrorResponse(500, "Error interno del servidor", ex.Message));
             }
         }
 
         /// <summary>
-        /// Inicia la reparación de una orden de trabajo
+        /// Inicia la reparaciï¿½n de una orden de trabajo
         /// </summary>
         [HttpPost("{id}/start-repair")]
         [ProducesResponseType(StatusCodes.Status200OK)]
@@ -212,12 +217,12 @@ namespace BusinessManagementSystem.API.Controllers
                 if (workOrder is null)
                     return NotFound(new ErrorResponse(404, "Orden no encontrada"));
 
-                _logger.LogInformation("Iniciando reparación para orden {WorkOrderId}", id);
+                _logger.LogInformation("Iniciando reparaciï¿½n para orden {WorkOrderId}", id);
 
                 var command = new StartRepairWorkOrder.Command(id);
                 await StartRepairWorkOrder.HandleAsync(_workOrderRepo, command, ct);
 
-                return Ok(new SuccessResponse<object>(true, null, "Reparación iniciada"));
+                return Ok(new SuccessResponse<object>(true, null, "Reparaciï¿½n iniciada"));
             }
             catch (InvalidOperationException ex)
             {
@@ -226,7 +231,7 @@ namespace BusinessManagementSystem.API.Controllers
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "Error al iniciar reparación");
+                _logger.LogError(ex, "Error al iniciar reparaciï¿½n");
                 return StatusCode(500, new ErrorResponse(500, "Error interno del servidor", ex.Message));
             }
         }
@@ -235,10 +240,10 @@ namespace BusinessManagementSystem.API.Controllers
         /// Registra el reporte de servicio de una orden
         /// </summary>
         [HttpPost("{id}/service-report")]
-        [ProduceResponseType(StatusCodes.Status200OK)]
-        [ProduceResponseType(StatusCodes.Status404NotFound)]
-        [ProduceResponseType(StatusCodes.Status400BadRequest)]
-        [ProduceResponseType(StatusCodes.Status500InternalServerError)]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<ActionResult<SuccessResponse<object>>> SetServiceReport(
             Guid id,
             [FromBody] SetServiceReportDto dto,
@@ -266,7 +271,7 @@ namespace BusinessManagementSystem.API.Controllers
             }
             catch (ArgumentException ex)
             {
-                return BadRequest(new ErrorResponse(400, "Error de validación", ex.Message));
+                return BadRequest(new ErrorResponse(400, "Error de validaciï¿½n", ex.Message));
             }
             catch (InvalidOperationException ex)
             {
@@ -281,7 +286,7 @@ namespace BusinessManagementSystem.API.Controllers
         }
 
         /// <summary>
-        /// Obtiene órdenes de trabajo por cliente
+        /// Obtiene ï¿½rdenes de trabajo por cliente
         /// </summary>
         [HttpGet("client/{clientId}")]
         [ProducesResponseType(StatusCodes.Status200OK)]
@@ -292,7 +297,7 @@ namespace BusinessManagementSystem.API.Controllers
         {
             try
             {
-                _logger.LogInformation("Obteniendo órdenes del cliente {ClientId}", clientId);
+                _logger.LogInformation("Obteniendo ï¿½rdenes del cliente {ClientId}", clientId);
 
                 var query = new GetWorkOrdersByClient.Query(clientId);
                 var result = await GetWorkOrdersByClient.HandleAsync(_workOrderRepo, query, ct);
@@ -310,13 +315,13 @@ namespace BusinessManagementSystem.API.Controllers
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "Error al obtener órdenes por cliente");
+                _logger.LogError(ex, "Error al obtener ï¿½rdenes por cliente");
                 return StatusCode(500, new ErrorResponse(500, "Error interno del servidor", ex.Message));
             }
         }
 
         /// <summary>
-        /// Obtiene órdenes de trabajo asignadas a un mecánico
+        /// Obtiene ï¿½rdenes de trabajo asignadas a un mecï¿½nico
         /// </summary>
         [HttpGet("mechanic/{mechanicId}")]
         [ProducesResponseType(StatusCodes.Status200OK)]
@@ -327,7 +332,7 @@ namespace BusinessManagementSystem.API.Controllers
         {
             try
             {
-                _logger.LogInformation("Obteniendo órdenes del mecánico {MechanicId}", mechanicId);
+                _logger.LogInformation("Obteniendo ï¿½rdenes del mecï¿½nico {MechanicId}", mechanicId);
 
                 var query = new GetWorkOrdersByMechanic.Query(mechanicId);
                 var result = await GetWorkOrdersByMechanic.HandleAsync(_workOrderRepo, query, ct);
@@ -345,7 +350,7 @@ namespace BusinessManagementSystem.API.Controllers
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "Error al obtener órdenes por mecánico");
+                _logger.LogError(ex, "Error al obtener ï¿½rdenes por mecï¿½nico");
                 return StatusCode(500, new ErrorResponse(500, "Error interno del servidor", ex.Message));
             }
         }

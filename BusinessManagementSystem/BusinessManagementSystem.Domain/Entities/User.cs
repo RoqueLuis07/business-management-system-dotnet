@@ -8,6 +8,7 @@ namespace BusinessManagementSystem.Domain.Entities
 
         public string FullName { get; private set; }
         public string Email { get; private set; }
+        public string PasswordHash { get; private set; } = string.Empty;
 
         public UserRole Role { get; private set; }
 
@@ -15,7 +16,7 @@ namespace BusinessManagementSystem.Domain.Entities
 
         public DateTime CreatedAtUtc { get; private set; } = DateTime.UtcNow;
 
-        public User(string fullName, string email, UserRole role)
+        public User(string fullName, string email, UserRole role, string? passwordHash = null)
         {
             if (string.IsNullOrWhiteSpace(fullName))
                 throw new ArgumentException("El nombre del usuario es obligatorio.", nameof(fullName));
@@ -26,6 +27,8 @@ namespace BusinessManagementSystem.Domain.Entities
             FullName = fullName.Trim();
             Email = email.Trim().ToLowerInvariant();
             Role = role;
+            if (!string.IsNullOrWhiteSpace(passwordHash))
+                PasswordHash = passwordHash;
         }
 
         public void Deactivate() => IsActive = false;

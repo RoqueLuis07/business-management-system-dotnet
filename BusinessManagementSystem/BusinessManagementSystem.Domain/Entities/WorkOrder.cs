@@ -7,11 +7,14 @@ namespace BusinessManagementSystem.Domain.Entities
     {
         public Guid Id { get; private set; } = Guid.NewGuid();
 
-        // Identificador de negocio (talonario). Único global.
+        // Identificador de negocio (talonario). ï¿½nico global.
         public string WorkOrderNumber { get; private set; }
 
         public Client Client { get; private set; }
+        public Guid ClientId { get; private set; }
+
         public Equipment Equipment { get; private set; }
+        public Guid EquipmentId { get; private set; }
 
         public WorkOrderDiagnosis? Diagnosis { get; private set; }
         public WorkOrderQuote? Quote { get; private set; }
@@ -22,7 +25,7 @@ namespace BusinessManagementSystem.Domain.Entities
 
         public WorkOrderServiceReport? ServiceReport { get; private set; }
 
-        // Cancelación
+        // Cancelaciï¿½n
         public string? CancellationReason { get; private set; }
         public Guid? CancelledByUserId { get; private set; }
         public DateTime? CancelledAtUtc { get; private set; }
@@ -34,40 +37,46 @@ namespace BusinessManagementSystem.Domain.Entities
 
         public DateTime CreatedAtUtc { get; private set; } = DateTime.UtcNow;
 
-        // Garantía corre desde ENTREGA (regla de negocio)
+        // Garantï¿½a corre desde ENTREGA (regla de negocio)
         public DateTime? DeliveredAtLocal { get; private set; }
         public int WarrantyDays { get; private set; } = 30;
         public Guid? WarrantyOriginalWorkOrderId { get; private set; }
 
-        // Asignación simple por ahora (luego lo vinculamos a User)
+        // Asignaciï¿½n simple por ahora (luego lo vinculamos a User)
         public Guid? AssignedMechanicUserId { get; private set; }
 
         // Accesorios (lo que trae / no trae al ingreso)
         public IReadOnlyCollection<WorkOrderAccessory> Accessories => _accessories.AsReadOnly();
         private readonly List<WorkOrderAccessory> _accessories = new();
 
-        // Garantías registradas (vínculos)
+        // Garantï¿½as registradas (vï¿½nculos)
         public IReadOnlyCollection<WarrantyClaim> WarrantyClaims => _warrantyClaims.AsReadOnly();
         private readonly List<WarrantyClaim> _warrantyClaims = new();
 
-        // Repuestos (mecánico carga; admin pone precio)
+        // Repuestos (mecï¿½nico carga; admin pone precio)
         public IReadOnlyCollection<WorkOrderPart> Parts => _parts.AsReadOnly();
         private readonly List<WorkOrderPart> _parts = new();
-
+        // Parameterless constructor required by EF Core for materialization
+        private WorkOrder()
+        {
+            // for EF
+        }
         public WorkOrder(string workOrderNumber, Client client, Equipment equipment, string requestedWorkDescription)
         {
             if (string.IsNullOrWhiteSpace(workOrderNumber))
-                throw new ArgumentException("El número de Orden de Trabajo (talonario) es obligatorio.", nameof(workOrderNumber));
+                throw new ArgumentException("El nï¿½mero de Orden de Trabajo (talonario) es obligatorio.", nameof(workOrderNumber));
             if (client is null)
                 throw new ArgumentNullException(nameof(client));
             if (equipment is null)
                 throw new ArgumentNullException(nameof(equipment));
             if (string.IsNullOrWhiteSpace(requestedWorkDescription))
-                throw new ArgumentException("La descripción del trabajo solicitado es obligatoria.", nameof(requestedWorkDescription));
+                throw new ArgumentException("La descripciï¿½n del trabajo solicitado es obligatoria.", nameof(requestedWorkDescription));
 
             WorkOrderNumber = workOrderNumber.Trim();
             Client = client;
+            ClientId = client.Id;
             Equipment = equipment;
+            EquipmentId = equipment.Id;
             RequestedWorkDescription = requestedWorkDescription.Trim();
         }
 
@@ -87,7 +96,7 @@ namespace BusinessManagementSystem.Domain.Entities
 
             var accessory = _accessories.FirstOrDefault(a => a.Id == accessoryId);
             if (accessory is null)
-                throw new InvalidOperationException("No se encontró el accesorio en la OT.");
+                throw new InvalidOperationException("No se encontrï¿½ el accesorio en la OT.");
 
             accessory.UpdateCondition(isPresent, condition);
         }
@@ -98,7 +107,7 @@ namespace BusinessManagementSystem.Domain.Entities
 
             var accessory = _accessories.FirstOrDefault(a => a.Id == accessoryId);
             if (accessory is null)
-                throw new InvalidOperationException("No se encontró el accesorio en la OT.");
+                throw new InvalidOperationException("No se encontrï¿½ el accesorio en la OT.");
 
             _accessories.Remove(accessory);
         }
@@ -115,7 +124,7 @@ namespace BusinessManagementSystem.Domain.Entities
 
             var part = _parts.FirstOrDefault(p => p.Id == workOrderPartId);
             if (part is null)
-                throw new InvalidOperationException("No se encontró el repuesto dentro de la OT.");
+                throw new InvalidOperationException("No se encontrï¿½ el repuesto dentro de la OT.");
 
             part.UpdateQuantity(quantity);
 
@@ -128,7 +137,7 @@ namespace BusinessManagementSystem.Domain.Entities
 
             var part = _parts.FirstOrDefault(p => p.Id == workOrderPartId);
             if (part is null)
-                throw new InvalidOperationException("No se encontró el repuesto dentro de la OT.");
+                throw new InvalidOperationException("No se encontrï¿½ el repuesto dentro de la OT.");
 
             _parts.Remove(part);
 
@@ -141,7 +150,7 @@ namespace BusinessManagementSystem.Domain.Entities
 
             var part = _parts.FirstOrDefault(p => p.Id == workOrderPartId);
             if (part is null)
-                throw new InvalidOperationException("No se encontró el repuesto dentro de la OT.");
+                throw new InvalidOperationException("No se encontrï¿½ el repuesto dentro de la OT.");
 
             part.SetPricing(unitPrice, catalogItemId);
 
@@ -153,7 +162,7 @@ namespace BusinessManagementSystem.Domain.Entities
             EnsureNotClosed();
 
             if (mechanicUserId == Guid.Empty)
-                throw new ArgumentException("El mecánico asignado no es válido.", nameof(mechanicUserId));
+                throw new ArgumentException("El mecï¿½nico asignado no es vï¿½lido.", nameof(mechanicUserId));
 
             AssignedMechanicUserId = mechanicUserId;
 
@@ -192,7 +201,7 @@ namespace BusinessManagementSystem.Domain.Entities
             else
                 Quote.Update(laborCost, partsTotal, notes);
 
-            // Nuevo presupuesto => limpiamos rechazo anterior (si existía)
+            // Nuevo presupuesto => limpiamos rechazo anterior (si existï¿½a)
             QuoteRejectionReason = null;
             QuoteRejectedByUserId = null;
             QuoteRejectedAtUtc = null;
@@ -223,7 +232,7 @@ namespace BusinessManagementSystem.Domain.Entities
                 throw new ArgumentException("El motivo de rechazo es obligatorio.", nameof(reason));
 
             if (rejectedByUserId == Guid.Empty)
-                throw new ArgumentException("El usuario no es válido.", nameof(rejectedByUserId));
+                throw new ArgumentException("El usuario no es vï¿½lido.", nameof(rejectedByUserId));
 
             QuoteRejectionReason = reason.Trim();
             QuoteRejectedByUserId = rejectedByUserId;
@@ -237,10 +246,10 @@ namespace BusinessManagementSystem.Domain.Entities
             EnsureNotClosed();
 
             if (string.IsNullOrWhiteSpace(reason))
-                throw new ArgumentException("El motivo de cancelación es obligatorio.", nameof(reason));
+                throw new ArgumentException("El motivo de cancelaciï¿½n es obligatorio.", nameof(reason));
 
             if (cancelledByUserId == Guid.Empty)
-                throw new ArgumentException("El usuario no es válido.", nameof(cancelledByUserId));
+                throw new ArgumentException("El usuario no es vï¿½lido.", nameof(cancelledByUserId));
 
             CancellationReason = reason.Trim();
             CancelledByUserId = cancelledByUserId;
@@ -288,7 +297,7 @@ namespace BusinessManagementSystem.Domain.Entities
             EnsureStatus(WorkOrderStatus.ListaParaEntrega);
 
             if (deliveredAtLocal == default)
-                throw new ArgumentException("La fecha de entrega no es válida.", nameof(deliveredAtLocal));
+                throw new ArgumentException("La fecha de entrega no es vï¿½lida.", nameof(deliveredAtLocal));
 
             DeliveredAtLocal = deliveredAtLocal;
             Status = WorkOrderStatus.Entregada;
@@ -305,7 +314,7 @@ namespace BusinessManagementSystem.Domain.Entities
             EnsureNotClosed();
 
             if (days < 1 || days > 365)
-                throw new ArgumentOutOfRangeException(nameof(days), "La garantía debe estar entre 1 y 365 días.");
+                throw new ArgumentOutOfRangeException(nameof(days), "La garantï¿½a debe estar entre 1 y 365 dï¿½as.");
 
             WarrantyDays = days;
         }
@@ -318,16 +327,16 @@ namespace BusinessManagementSystem.Domain.Entities
                 throw new ArgumentNullException(nameof(originalWorkOrder));
 
             if (this.Id == originalWorkOrder.Id)
-                throw new InvalidOperationException("Una OT no puede ser garantía de sí misma.");
+                throw new InvalidOperationException("Una OT no puede ser garantï¿½a de sï¿½ misma.");
 
             if (originalWorkOrder.Status != WorkOrderStatus.Entregada)
-                throw new InvalidOperationException("La OT original debe estar entregada para aplicar garantía.");
+                throw new InvalidOperationException("La OT original debe estar entregada para aplicar garantï¿½a.");
 
             if (!originalWorkOrder.IsUnderWarranty(nowLocal))
-                throw new InvalidOperationException("La OT original está fuera del período de garantía.");
+                throw new InvalidOperationException("La OT original estï¿½ fuera del perï¿½odo de garantï¿½a.");
 
             if (Client.Id != originalWorkOrder.Client.Id)
-                throw new InvalidOperationException("La garantía debe pertenecer al mismo cliente.");
+                throw new InvalidOperationException("La garantï¿½a debe pertenecer al mismo cliente.");
 
             WarrantyOriginalWorkOrderId = originalWorkOrder.Id;
 
@@ -340,13 +349,13 @@ namespace BusinessManagementSystem.Domain.Entities
                 throw new InvalidOperationException("La OT ya fue entregada/cerrada. No se puede modificar.");
 
             if (Status == WorkOrderStatus.Cancelada)
-                throw new InvalidOperationException("La OT está cancelada. No se puede modificar.");
+                throw new InvalidOperationException("La OT estï¿½ cancelada. No se puede modificar.");
         }
 
         private void EnsureStatus(params WorkOrderStatus[] allowed)
         {
             if (!allowed.Contains(Status))
-                throw new InvalidOperationException($"Operación no permitida en el estado actual: {Status}.");
+                throw new InvalidOperationException($"Operaciï¿½n no permitida en el estado actual: {Status}.");
         }
 
         private void InvalidateQuoteIfAny()
@@ -355,7 +364,7 @@ namespace BusinessManagementSystem.Domain.Entities
 
             Quote = null;
 
-            // Si está en negociación o esperando, volvemos a diagnóstico para recalcular
+            // Si estï¿½ en negociaciï¿½n o esperando, volvemos a diagnï¿½stico para recalcular
             if (Status == WorkOrderStatus.EsperandoAprobacion || Status == WorkOrderStatus.PresupuestoRechazado)
                 Status = WorkOrderStatus.EnDiagnostico;
         }

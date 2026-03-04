@@ -8,6 +8,7 @@ namespace BusinessManagementSystem.Domain.Entities
         public string Brand { get; private set; }         // OPCIONAL
         public string Model { get; private set; }         // OPCIONAL
         public string SerialNumber { get; private set; }  // OPCIONAL
+        public DateTime CreatedAtUtc { get; private set; } = DateTime.UtcNow;
 
         public bool IsIdentified =>
             !IsUnknown(Brand) || !IsUnknown(Model) || !IsUnknown(SerialNumber);

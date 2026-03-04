@@ -17,9 +17,9 @@
 
   <ItemGroup>
     <!-- Domain project -->
-    <ProjectReference Include="..\..\..\BusinessManagementSystem\BusinessManagementSystem.Domain\BusinessManagementSystem.Domain.csproj" />
+    <ProjectReference Include="..\..\..\BusinessManagementSystem.Domain\BusinessManagementSystem.Domain.csproj" />
     <!-- Application project -->
-    <ProjectReference Include="..\..\..\..\src\Application\BusinessManagementSystem.Application\BusinessManagementSystem.Application.csproj" />
+    <ProjectReference Include="..\..\Application\BusinessManagementSystem.Application\BusinessManagementSystem.Application.csproj" />
     <!-- Infrastructure project -->
     <ProjectReference Include="..\..\Infrastructure\BusinessManagementSystem.Infrastructure\BusinessManagementSystem.Infrastructure.csproj" />
   </ItemGroup>

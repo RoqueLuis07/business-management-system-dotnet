@@ -11,7 +11,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BusinessManagementSystem.AP
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BusinessManagementSystem.Infrastructure", "BusinessManagementSystem\src\Infrastructure\BusinessManagementSystem.Infrastructure\BusinessManagementSystem.Infrastructure.csproj", "{E4A176B7-DB99-499F-8A1A-0AB772AD44AC}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BusinessManagementSystem.Application", "src\Application\BusinessManagementSystem.Application\BusinessManagementSystem.Application.csproj", "{2C5A99E5-0A5F-4521-8AE6-E6B9F48126AF}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BusinessManagementSystem.Application", "BusinessManagementSystem\src\Application\BusinessManagementSystem.Application\BusinessManagementSystem.Application.csproj", "{2C5A99E5-0A5F-4521-8AE6-E6B9F48126AF}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
